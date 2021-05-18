@@ -1,4 +1,4 @@
-# prymart-st
+# fe-prymart
 
 ## Project setup
 ```

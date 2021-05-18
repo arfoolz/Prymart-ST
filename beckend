@@ -1,0 +1,395 @@
+package main
+
+import (
+	"database/sql"
+	"fmt"
+	"time"
+
+	//"fmt"
+	"log"
+	"strconv"
+
+	"gopkg.in/gorp.v1"
+
+	"github.com/gin-gonic/gin"
+	_ "github.com/go-sql-driver/mysql"
+)
+
+// TABEL USER
+type User 			struct  {
+	Id 				int64 	`db:"id" json:"id"`
+	CodeUser		string	`db:"code_user" json:"code_user"`
+	Name 			string 	`db:"name" json:"name"`
+	DateOfBirth 	string 	`db:"date_of_birth" json:"date_of_birth"`
+	Gender 			string 	`db:"gender" json:"gender"`
+	PhoneNumber 	string 	`db:"phone_number" json:"phone_number"`
+	Address  		string 	`db:"address" json:"address"`
+	//Username  		string 	`db:"username" json:"username"`
+	//Password  		string 	`db:"password" json:"password"`
+}
+
+// TABEL ITEM
+type Item 			struct  {
+	Id 				int64 	`db:"id" json:"id"`
+	CodeItem		string	`db:"code_item" json:"code_item"`
+	ItemName	 	string 	`db:"item_name" json:"item_name"`
+	TypeOfItem		string 	`db:"type_of_item" json:"type_of_item"`
+	PurchasePrice 	string 	`db:"purchase_price" json:"purchase_price"`
+	SellingPrice 	string 	`db:"selling_price" json:"selling_price"`
+	StockItem 		string 	`db:"stock_item" json:"stock_item"`
+	ExpiredDate		string	`db:"expired_date" json:"expired_date"`
+}
+
+var dbmap = initDb()
+
+func initDb() *gorp.DbMap {
+	db, err := sql.Open("mysql", "root:@/prymart")
+	checkErr(err, "sql.Open failed")
+	dbmap := &gorp.DbMap{Db: db, Dialect: gorp.MySQLDialect{"InnoDB", "UTF8"}}
+	dbmap.AddTableWithName(User{}, "User").SetKeys(true, "Id")
+	dbmap.AddTableWithName(Item{}, "Item").SetKeys(true, "Id")
+	err = dbmap.CreateTablesIfNotExists()
+	checkErr(err, "Create tables failed")
+
+	return dbmap
+}
+
+func checkErr(err error, msg string) {
+	if err != nil {
+		log.Fatalln(msg, err)
+	}
+}
+
+func Cors() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Add("Access-Control-Allow-Origin", "*")
+		c.Next()
+	}
+}
+
+func main() {
+	r := gin.Default()
+
+	r.Use(Cors())
+
+	v1 := r.Group("v1")
+	{
+		v1.GET("/users", GetUsers)
+		v1.GET("/users/:id", GetUser)
+		v1.POST("/users", PostUser)
+		v1.PUT("/users/update/:id", UpdateUser)
+		v1.DELETE("/users/:id", DeleteUser)
+
+		v1.GET("/items", GetItems)
+		v1.GET("/items/:id", GetItem)
+		v1.POST("/items", PostItem)
+		v1.PUT("/items/update/:id", UpdateItem)
+		v1.DELETE("/items/:id", DeleteItem)
+
+		v1.OPTIONS("/users", OptionsUser)
+		v1.OPTIONS("/users/:id", OptionsUser)
+
+		v1.OPTIONS("/items", OptionsItem)
+		v1.OPTIONS("/items/:id", OptionsItem)
+
+	}
+
+	r.Run(":8080")
+}
+
+// UNTUK LIST KARYAWAN
+func GetUsers(c *gin.Context) {
+	var users []User
+	_, err := dbmap.Select(&users, "SELECT * FROM user")
+
+	if err == nil {
+		c.JSON(200, users)
+	} else {
+		c.JSON(404, gin.H{"error": "no user(s) into the table"})
+	}
+}
+
+// UNTUK LIST BARANG
+func GetItems(c *gin.Context) {
+	var items []Item
+	_, err := dbmap.Select(&items, "SELECT * FROM item")
+
+	if err == nil {
+		c.JSON(200, items)
+	} else {
+		c.JSON(404, gin.H{"error": "no user(s) into the table"})
+	}
+}
+
+// RENDER KARYAWAN BY ID
+func GetUser(c *gin.Context) {
+	id := c.Params.ByName("id")
+	var user User
+	err := dbmap.SelectOne(&user, "SELECT * FROM user WHERE id=? LIMIT 1", id)
+
+	if err == nil {
+		user_id, _ := strconv.ParseInt(id, 0, 64)
+
+		content := &User{
+			Id			: user_id,
+			CodeUser	: user.CodeUser,
+			Name		: user.Name,
+			DateOfBirth	: user.DateOfBirth,
+			Gender		: user.Gender,
+			PhoneNumber	: user.PhoneNumber,
+			Address		: user.Address,
+			//Username	: user.Username,
+			//Password	: user.Password,
+		}
+		c.JSON(200, content)
+	} else {
+		c.JSON(404, gin.H{"error": "user not found"})
+	}
+	// curl -i http://localhost:8080/v1/users/1
+}
+
+// RENDER BARANG BY ID
+func GetItem(c *gin.Context) {
+	id := c.Params.ByName("id")
+	var item Item
+	err := dbmap.SelectOne(&item, "SELECT * FROM item WHERE id=? LIMIT 1", id)
+
+	if err == nil {
+		item_id, _ := strconv.ParseInt(id, 0, 64)
+
+		content := &Item{
+			Id				: item_id,
+			CodeItem		: item.CodeItem,
+			ItemName		: item.ItemName,
+			TypeOfItem		: item.TypeOfItem,
+			PurchasePrice	: item.PurchasePrice,
+			SellingPrice	: item.SellingPrice,
+			StockItem		: item.StockItem,
+			ExpiredDate		: item.ExpiredDate,
+		}
+		c.JSON(200, content)
+	} else {
+		c.JSON(404, gin.H{"error": "item not found"})
+	}
+}
+
+// BUAT TAMBAH KARYAWAN
+func PostUser(c *gin.Context) {
+	var user User
+	c.Bind(&user)
+
+	if user.Name != "" {
+
+		code := GenerateCode("USR - ")
+
+		//fmt.Println(code,"----------------------------------")
+		if insert, _ := dbmap.Exec(`INSERT INTO user (code_user, name, date_of_birth, gender, phone_number, address) 
+							VALUES (?,?,?,?,?,?)`,
+			code, user.Name, user.DateOfBirth, user.Gender, user.PhoneNumber, user.Address);
+			insert != nil {
+			user_id, err := insert.LastInsertId()
+			if err == nil {
+				content := &User{
+					Id			 : user_id,
+					CodeUser	 : code,
+					Name		 : user.Name,
+					DateOfBirth	 : user.DateOfBirth,
+					Gender		 : user.Gender,
+					PhoneNumber	 : user.PhoneNumber,
+					Address		 : user.Address,
+				}
+				c.JSON(201, content)
+			} else {
+				checkErr(err, "Insert failed")
+			}
+		}
+
+	} else {
+		c.JSON(400, gin.H{"error": "Fields are empty"})
+	}
+
+}
+
+// BUAT TAMBAH BARANG
+func PostItem(c *gin.Context) {
+	var item Item
+	c.Bind(&item)
+
+	if item.ItemName != "" {
+
+		code := GenerateCode("ITM - ")
+
+		if insert, _ := dbmap.Exec(`INSERT INTO item (code_item, item_name, type_of_item, purchase_price, selling_price, stock_item, expired_date) 
+							VALUES (?,?,?,?,?,?,?)`,
+			code, item.ItemName, item.TypeOfItem, item.PurchasePrice, item.SellingPrice, item.StockItem, item.ExpiredDate);
+			insert != nil {
+			item_id, err := insert.LastInsertId()
+			if err == nil {
+				content := &Item{
+					Id				: item_id,
+					CodeItem		: code,
+					ItemName		: item.ItemName,
+					TypeOfItem		: item.TypeOfItem,
+					PurchasePrice	: item.PurchasePrice,
+					SellingPrice	: item.SellingPrice,
+					StockItem		: item.StockItem,
+					ExpiredDate		: item.ExpiredDate,
+				}
+				c.JSON(201, content)
+			} else {
+				checkErr(err, "Insert failed")
+			}
+		}
+
+	} else {
+		c.JSON(400, gin.H{"error": "Fields are empty"})
+	}
+
+}
+
+// UPDATE KARYAWAN
+func UpdateUser(c *gin.Context)   {
+	id := c.Params.ByName("id")
+	var user User
+	err := dbmap.SelectOne(&user, "SELECT * FROM user WHERE id=? ", id)
+
+	if err == nil {
+		var json User
+		c.Bind(&json)
+
+		//user_id, _ := strconv.ParseInt(id, 0, 64)
+		//
+		user := User{
+			Id			: user.Id,
+			CodeUser	: user.CodeUser,
+			Name		: json.Name,
+			DateOfBirth	: json.DateOfBirth,
+			PhoneNumber	: json.PhoneNumber,
+			Gender		: user.Gender,
+			Address		: json.Address,
+		}
+
+		if user.Name != ""  {
+			_, err = dbmap.Update(&user)
+
+			if err == nil {
+				c.JSON(200, user)
+			} else {
+				checkErr(err, "Updated failed")
+			}
+
+		} else {
+			c.JSON(400, gin.H{"error": "fields are empty"})
+		}
+
+	} else {
+		c.JSON(404, gin.H{"error": "user not found"})
+	}
+
+}
+
+// UPDATE BARANG
+func UpdateItem(c *gin.Context) {
+	id := c.Params.ByName("id")
+	var item Item
+	err := dbmap.SelectOne(&item, "SELECT * FROM item WHERE id=? ", id)
+
+	if err == nil {
+		var json Item
+		c.Bind(&json)
+
+		item_id, _ := strconv.ParseInt(id, 0, 64)
+
+		item := Item{
+			Id				: item_id,
+			ItemName		: json.ItemName,
+			CodeItem		: item.CodeItem,
+			TypeOfItem		: json.TypeOfItem,
+			PurchasePrice	: json.PurchasePrice,
+			SellingPrice	: json.SellingPrice,
+			StockItem		: json.StockItem,
+			ExpiredDate		: json.ExpiredDate,
+		}
+
+		if item.ItemName != "" {
+			_, err = dbmap.Update(&item)
+
+			if err == nil {
+				c.JSON(200, item)
+			} else {
+				checkErr(err, "Updated failed")
+			}
+
+		} else {
+			c.JSON(400, gin.H{"error": "fields are empty"})
+		}
+
+	} else {
+		c.JSON(404, gin.H{"error": "item not found"})
+	}
+
+}
+
+// HAPUS KARYAWAN
+func DeleteUser(c *gin.Context) {
+	id := c.Params.ByName("id")
+
+	fmt.Println(id)
+	var user User
+	err := dbmap.SelectOne(&user, "SELECT * FROM user WHERE id=?", id)
+
+	if err == nil {
+		_, err = dbmap.Delete(&user)
+
+		if err == nil {
+			c.JSON(200, gin.H{"id #" + id: "deleted"})
+		} else {
+			checkErr(err, "Delete failed")
+		}
+
+	} else {
+		c.JSON(404, gin.H{"error": "user not found"})
+	}
+
+}
+
+// HAPUS BARANG
+func DeleteItem(c *gin.Context) {
+	id := c.Params.ByName("id")
+
+	fmt.Println(id)
+	var item Item
+	err := dbmap.SelectOne(&item, "SELECT * FROM item WHERE id=?", id)
+
+	if err == nil {
+		_, err = dbmap.Delete(&item)
+
+		if err == nil {
+			c.JSON(200, gin.H{"id #" + id: "deleted"})
+		} else {
+			checkErr(err, "Delete failed")
+		}
+
+	} else {
+		c.JSON(404, gin.H{"error": "item not found"})
+	}
+
+}
+
+func OptionsUser(c *gin.Context) {
+	c.Writer.Header().Set("Access-Control-Allow-Methods", "DELETE,POST, PUT")
+	c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	c.Next()
+}
+
+func OptionsItem(c *gin.Context) {
+	c.Writer.Header().Set("Access-Control-Allow-Methods", "DELETE,POST, PUT")
+	c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	c.Next()
+}
+
+// UNTUK RANDOM KODE UNIK
+func  GenerateCode(prefix string)string{
+	t:= time.Now().Nanosecond()
+	return prefix+ strconv.Itoa(int(t))
+}
