@@ -105,7 +105,7 @@
             </v-row>
         </v-container>
 
-        <br>
+        <!-- <br>
         <h2>USER</h2>
         <br>
         
@@ -141,7 +141,7 @@
                     </div>
                 </v-col>
             </v-row>
-        </v-container>
+        </v-container> -->
 
         <br>
         <br>
@@ -163,7 +163,7 @@
 
                 <v-col md="1" sm="2" cols="5" lg="1" class="text-right">
                 <v-btn
-                    v-if="this.karyawan.name && this.date && karyawan.gender && karyawan.phone_number && karyawan.address && karyawan.username && karyawan.password"
+                    v-if="this.karyawan.name && this.date && karyawan.gender && karyawan.phone_number && karyawan.address"
                     style="margin: 10px; background: #4662d4; color: white; box-sizing: content-box; border-radius: 25px; width: 111px; height: 45px; padding: 4px"
                     class="save"
                     @click="save()"
@@ -257,8 +257,8 @@ export default ({
            gender         : this.karyawan.gender,
            phone_number   : this.karyawan.phone_number,
            address        : this.karyawan.address,
-           username       : this.karyawan.username,
-           password       : this.karyawan.password,
+        //    username       : this.karyawan.username,
+        //    password       : this.karyawan.password,
           })
 
           .then()

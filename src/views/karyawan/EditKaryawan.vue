@@ -73,15 +73,15 @@
                 <v-col cols="6">
                     <div>
                         <p>Jenis Kelamin <span style="color: red;">*</span></p>
-                        <v-text-field
+                        <v-select
                          v-model="karyawan.gender"
+                         :items="type"
                          class="form"
                          label="Jenis Kelamin"
                          single-line
                          outlined
-                         disabled
                          >
-                        </v-text-field>
+                        </v-select>
                     </div>
                 </v-col>
                 <v-col cols="6">
@@ -119,7 +119,7 @@
             </v-row>
         </v-container>
 
-        <v-container>
+        <!-- <v-container>
             <v-row>
                 <v-col cols="6">
                     <div>
@@ -150,35 +150,8 @@
                     </div>
                 </v-col>
             </v-row>
-            <!-- <v-row>
-                <v-col cols="6">
-                    <div>
-                        <p>Password <span style="color: red;">*</span></p>
-                        <v-text-field
-                         v-model="karyawan.password"
-                         class="form"
-                         label="Password"
-                         single-line
-                         outlined
-                         >
-                        </v-text-field>
-                    </div>
-                </v-col>
-                <v-col cols="6">
-                    <div>
-                        <p>Password <span style="color: red;">*</span></p>
-                        <v-text-field
-                         v-model="karyawan.password"
-                         class="form"
-                         label="Password"
-                         single-line
-                         outlined
-                         >
-                        </v-text-field>
-                    </div>
-                </v-col>
-            </v-row> -->
-        </v-container>
+          
+        </v-container> -->
 
         <br>
         <br>
@@ -216,22 +189,24 @@
 <script>
 
 export default ({
-    data: vm => {
+    data() {
         return {
 
+            type: ['Pria', 'Wanita',],
+
             date: new Date().toISOString().substr(0, 10),
-            dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
+            dateFormatted: this.formatDate(new Date().toISOString().substr(0, 10)),
             menudate: false,
 
             karyawan: {
-                code_user: '',
-                name: '',
-                date_of_birth:'',
-                gender:'',
-                phone_number: '',
-                address: '',
-                username:'',
-                password:'',
+                code_user     : this.code_user,
+                name          : this.name,
+                date_of_birth : this.date_of_birth,
+                gender        : this.gender,
+                phone_number  : this.phone_number,
+                address       : this.address,
+                // username:'',
+                // password:'',
             },
         }
     },
@@ -273,14 +248,14 @@ export default ({
           .get('/users/' + this.$route.params.id)
 
           .then((response) => {
-            this.karyawan.code_user = response.data.code_user
-            this.karyawan.name = response.data.name
+            this.karyawan.code_user     = response.data.code_user
+            this.karyawan.name          = response.data.name
             this.karyawan.date_of_birth = response.data.date_of_birth
-            this.karyawan.gender = response.data.gender
-            this.karyawan.phone_number = response.data.phone_number
-            this.karyawan.address = response.data.address
-            this.karyawan.username = response.data.username
-            this.karyawan.password = response.data.password
+            this.karyawan.gender        = response.data.gender
+            this.karyawan.phone_number  = response.data.phone_number
+            this.karyawan.address       = response.data.address
+            // this.karyawan.username = response.data.username
+            // this.karyawan.password = response.data.password
             
             console.log(response.data)
           })
@@ -289,11 +264,11 @@ export default ({
         save(){
           this.$http
           .put('/users/update/' + this.$route.params.id, {
-           name: this.karyawan.name,
-           date_of_birth: this.karyawan.date_of_birth,
-           gender: this.karyawan.gender,
-           phone_number: this.karyawan.phone_number,
-           address: this.karyawan.address,
+           name          : this.karyawan.name,
+           date_of_birth : this.karyawan.date_of_birth,
+           gender        : this.karyawan.gender,
+           phone_number  : this.karyawan.phone_number,
+           address       : this.karyawan.address,
           })
           
         

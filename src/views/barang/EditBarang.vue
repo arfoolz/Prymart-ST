@@ -169,7 +169,7 @@ export default ({
     data() {
         return {
 
-             type: ['Makanan', 'Minuman',],
+            type: ['Makanan', 'Minuman',],
 
             date: new Date().toISOString().substr(0, 10),
             dateFormatted: this.formatDate(new Date().toISOString().substr(0, 10)),
@@ -224,13 +224,14 @@ export default ({
           .get('/items/' + this.$route.params.id)
 
           .then((response) => {
+           
            this.item.code_item      = response.data.code_item
            this.item.item_name      = response.data.item_name
            this.item.type_of_item   = response.data.type_of_item
            this.item.purchase_price = response.data.purchase_price
            this.item.selling_price  = response.data.selling_price
            this.item.stock_item     = response.data.stock_item
-           this.expired_date        = response.data.expired_date
+           this.item.expired_date   = response.data.expired_date
             
           console.log(response.data)
           })
@@ -239,6 +240,7 @@ export default ({
         save(){
           this.$http
           .put('/items/update/' + this.$route.params.id, {
+          
             item_name      : this.item.item_name,
             type_of_item   : this.item.type_of_item,
             purchase_price : this.item.purchase_price,
