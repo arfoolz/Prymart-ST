@@ -7,6 +7,8 @@
             width="14%"
             :dark="true"
             >
+        
+            <!-- <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon> -->
 
             <v-list>
 
@@ -72,6 +74,15 @@
         </v-app-bar>
     </section>
 </template>
+
+
+// <script>
+//   export default {
+//     data: () => ({
+//       drawer: false,
+//     }),
+//   }
+// </script>
 
 <style scoped>
     .navfont{

@@ -176,13 +176,13 @@ export default ({
             menudate: false,
 
             item: {
-                code_item      : this.code_item,
-                item_name      : this.item_name,
-                type_of_item   : this.type_of_item,
-                purchase_price : this.purchase_price,
-                selling_price  : this.selling_price,
-                stock_item     : this.stock_item,
-                expired_date   : this.expired_date,  
+                code_item      : '',
+                item_name      : '',
+                type_of_item   : '',
+                purchase_price : '',
+                selling_price  : '',
+                stock_item     : '',
+                expired_date   : '',  
             },
         }
     },

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h2>List Karyawan</h2>
+        <h1 class="text-center">LIST KARYAWAN</h1>
 
         <v-container>
             <v-row cols="12">
@@ -12,7 +12,7 @@
                                 height: 50px;
                                 background: #4662d4;
                                 color: white;
-                                border-radius: 30px;
+                                border-radius: 10px;
                                 font-size: 16px;
                                 margin-top: 50px;
                                 font-weight: bold;
@@ -25,7 +25,7 @@
                 </v-col>
 
                 <v-col cols="6">
-                   <div>
+                    <!-- <div>
                        <template>
                             <v-text-field
                                 style="margin-top: 50px;
@@ -40,14 +40,12 @@
                                 >
                             </v-text-field>
                         </template>
-                   </div>
+                   </div> -->
                 </v-col>
             </v-row>
 
 
             <br>
-            <br>
-            <!-- <FilterGender style="width:200px;"></FilterGender> -->
             <v-divider></v-divider>
             <br>
             <br>
@@ -120,11 +118,6 @@
                 </v-data-table>
             </div>
         </v-container>
-
-        <v-divider></v-divider>
-        <br>
-        <br>
-
         <!-- OPEN DIALOG FOR DELETE -->
         <!-- <v-dialog v-model="deleteDialog" persistent max-width="360px">
             <v-card style="height: 200px">
@@ -161,13 +154,7 @@
 </template>
 
 <script>
-
-// import FilterGender from "../../components/Filter/FilterGender"
-
 export default {
-
-    // components: {FilterGender,},
-
     data() {
         return{
 

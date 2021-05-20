@@ -10,10 +10,13 @@
   "dependencies": {
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "number-separator": "^2.0.0",
     "vee-validate": "^3.4.5",
     "vue": "^2.6.11",
     "vue-axios": "^3.2.4",
+    "vue-currency-input": "^1.22.6",
     "vue-moment": "^4.1.0",
+    "vue-numeric": "^2.4.2",
     "vue-router": "^3.5.1",
     "vue-toastification": "^1.7.11",
     "vuetify": "^2.4.0",

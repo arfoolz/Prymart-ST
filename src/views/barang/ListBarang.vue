@@ -1,18 +1,19 @@
 <template>
     <div>
-        <h2>List Barang</h2>
+        <h1 class="text-center">LIST BARANG</h1>
 
         <v-container>
             <v-row cols="12">
                 <v-col cols="6" sm="2" md="4" lg="6">
                     <div>
                         <v-btn
-                         :to="{ path: 'barang/tambah-barang' }"
+                         :loading = buttonLoading
+                         @click="fungsiTambah()"
                          style="width: 200px;
                                 height: 50px;
                                 background: #4662d4;
                                 color: white;
-                                border-radius: 30px;
+                                border-radius: 10px;
                                 font-size: 16px;
                                 margin-top: 50px;
                                 font-weight: bold;
@@ -25,7 +26,7 @@
                 </v-col>
 
                 <v-col cols="6" sm="4" md="5" lg="6">
-                    <div>
+                    <!-- <div>
                        <template>
                             <v-text-field
                                 style="margin-top: 50px;
@@ -39,11 +40,10 @@
                                 >
                             </v-text-field>
                         </template>
-                   </div>
+                   </div> -->
                 </v-col>
             </v-row>
 
-            <br>
             <br>
             <v-divider></v-divider>
             <br>
@@ -123,17 +123,13 @@
 </template>
 
 <script>
-
-// import Search from "../../components/Search"
-
 export default {
-
-    // components: {Search,},
     
     data() {
         return{
 
-            search: '',
+            search : '',
+            buttonLoading : false,
 
             dataTable : [],
             table: [
@@ -186,10 +182,10 @@ export default {
                      class: ' black--text title',
                      sortable: false,
                     },
-                    // {
-                    // value: 'actions',
-                    // sortable: false,
-                    // },
+                    {
+                     value: 'actions',
+                     sortable: false,
+                    },
                 ],
         }
     },
@@ -218,7 +214,12 @@ export default {
                 console.log(this.dataTable)
                 window.location.reload()
             })
-        }
+        },
+       
+        fungsiTambah(){
+            this.buttonLoading = true
+            this.$router.push('/barang/tambah-barang')
+        },
     },
 }
 </script>

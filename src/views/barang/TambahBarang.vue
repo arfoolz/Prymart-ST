@@ -154,7 +154,11 @@
 
 <script>
 
+
 export default ({
+
+    // components: { VueNumeric,},
+
     data: vm => {
         return {
 
