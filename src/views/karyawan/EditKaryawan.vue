@@ -199,12 +199,12 @@ export default ({
             menudate: false,
 
             karyawan: {
-                code_user     : this.code_user,
-                name          : this.name,
-                date_of_birth : this.date_of_birth,
-                gender        : this.gender,
-                phone_number  : this.phone_number,
-                address       : this.address,
+                code_user     : '',
+                name          : '',
+                date_of_birth : '',
+                gender        : '',
+                phone_number  : '',
+                address       : '',
                 // username:'',
                 // password:'',
             },
@@ -263,26 +263,22 @@ export default ({
 
         save(){
           this.$http
-          .put('/users/update/' + this.$route.params.id, {
-           name          : this.karyawan.name,
-           date_of_birth : this.karyawan.date_of_birth,
-           gender        : this.karyawan.gender,
-           phone_number  : this.karyawan.phone_number,
-           address       : this.karyawan.address,
+          .put('/users/' + this.$route.params.id, {
+            name          : this.karyawan.name,
+            date_of_birth : this.karyawan.date,
+            gender        : this.karyawan.gender,
+            phone_number  : this.karyawan.phone_number,
+            address       : this.karyawan.address,
           })
           
-        
-          .then(response=>{
-            console.log(response)
+          .then()
             this.$router.push('/karyawan')
-            console.log("Masuk")
-        })
-        //   .catch((error) => {
-        //     this.error = error.response.data.error
-        //   })
-      },
-    },
-})
+            this.$toast.success('Data has been updated successfully')
+          
+        }
+      }
+    }
+)
 </script>
 
 

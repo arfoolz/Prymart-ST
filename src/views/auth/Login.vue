@@ -19,7 +19,7 @@
 
         <div class="d-flex justify-space-between align-center">
           
-          <v-btn v-if="form.username==usernameValue && form.password==passwordValue" class="font-weight-bold" color="primary darken-1" large to="/karyawan" >
+          <v-btn v-if="form.username==usernameValue && form.password==passwordValue" class="font-weight-bold" color="primary darken-1" large to="/barang" >
             Login
           </v-btn>
 

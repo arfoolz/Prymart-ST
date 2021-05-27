@@ -98,6 +98,9 @@
                                         <v-list-item-title>Update</v-list-item-title>
                                     </div>
                                     </v-list-item>
+                                    <v-divider
+                                        style="margin-left: 10px;margin-right: 10px"
+                                    ></v-divider>
                                     <v-list-item
                                     @click="deleteData(props.item.id)"
                                     link
@@ -108,9 +111,6 @@
                                     </div>
                                     </v-list-item>
                                 </template>
-                                <v-divider
-                                    style="margin-left: 10px;margin-right: 10px"
-                                ></v-divider>
                             </v-list>
                         </v-menu>
                     </td>
@@ -203,6 +203,7 @@ export default {
                 this.dataTable = response.data
                 console.log(this.dataTable)
             })
+
         },
 
         deleteData(id){

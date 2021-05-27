@@ -56,6 +56,7 @@
                         <p>Harga Beli <span style="color: red;">*</span></p>
                         <v-text-field
                          v-model="item.purchase_price"
+                         @keypress="onlyNumber"
                          class="form"
                          label="Harga Beli"
                          single-line
@@ -69,6 +70,7 @@
                         <p>Harga Jual <span style="color: red;">*</span></p>
                         <v-text-field
                          v-model="item.selling_price"
+                         @keypress="onlyNumber"
                          class="form"
                          label="Harga Jual"
                          single-line
@@ -85,6 +87,8 @@
                         <p>Stock Barang <span style="color: red;">*</span></p>
                         <v-text-field
                          v-model="item.stock_item"
+                         @keypress="onlyNumber"
+                         type="number"
                          class="form"
                          label="Stock Barang"
                          single-line
@@ -218,13 +222,13 @@ export default ({
         const [day, month, year] = date.split('/')
         return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
         },
+        
 
         renderData(){
           this.$http
           .get('/items/' + this.$route.params.id)
 
           .then((response) => {
-           
            this.item.code_item      = response.data.code_item
            this.item.item_name      = response.data.item_name
            this.item.type_of_item   = response.data.type_of_item
@@ -232,34 +236,32 @@ export default ({
            this.item.selling_price  = response.data.selling_price
            this.item.stock_item     = response.data.stock_item
            this.item.expired_date   = response.data.expired_date
-            
-          console.log(response.data)
           })
         },
 
         save(){
           this.$http
-          .put('/items/update/' + this.$route.params.id, {
-          
+          .put('/items/' + this.$route.params.id, {
             item_name      : this.item.item_name,
             type_of_item   : this.item.type_of_item,
             purchase_price : this.item.purchase_price,
             selling_price  : this.item.selling_price,
             stock_item     : this.item.stock_item,
             expired_date   : this.date,
-           
           })
           
-        
-          .then(response=>{
-            console.log(response)
+          .then()
             this.$router.push('/barang')
-            console.log("Masuk")
-        })
-        //   .catch((error) => {
-        //     this.error = error.response.data.error
-        //   })
-      },
+            this.$toast.success('Data has been updated successfully')
+        },
+
+        onlyNumber ($event) {
+            //console.log($event.keyCode); //keyCodes value
+            let keyCode = ($event.keyCode ? $event.keyCode : $event.which);
+            if ((keyCode < 48 || keyCode > 57) && keyCode !== 46) { // 46 is dot
+                $event.preventDefault();
+            }
+        }
     },
 })
 </script>

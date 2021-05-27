@@ -202,7 +202,6 @@ export default ({
       },
     },
 
-  
     methods: {
 
         formatDate (date) {
