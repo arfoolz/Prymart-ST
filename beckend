@@ -77,13 +77,13 @@ func main() {
 		v1.GET("/users", GetUsers)
 		v1.GET("/users/:id", GetUser)
 		v1.POST("/users", PostUser)
-		v1.PUT("/users/update/:id", UpdateUser)
+		v1.PUT("/users/:id", UpdateUser)
 		v1.DELETE("/users/:id", DeleteUser)
 
 		v1.GET("/items", GetItems)
 		v1.GET("/items/:id", GetItem)
 		v1.POST("/items", PostItem)
-		v1.PUT("/items/update/:id", UpdateItem)
+		v1.PUT("/items/:id", UpdateItem)
 		v1.DELETE("/items/:id", DeleteItem)
 
 		v1.OPTIONS("/users", OptionsUser)
@@ -257,15 +257,15 @@ func UpdateUser(c *gin.Context)   {
 		var json User
 		c.Bind(&json)
 
-		//user_id, _ := strconv.ParseInt(id, 0, 64)
-		//
+		user_id, _ := strconv.ParseInt(id, 0, 64)
+
 		user := User{
-			Id			: user.Id,
+			Id			: user_id,
 			CodeUser	: user.CodeUser,
 			Name		: json.Name,
 			DateOfBirth	: json.DateOfBirth,
 			PhoneNumber	: json.PhoneNumber,
-			Gender		: user.Gender,
+			Gender		: json.Gender,
 			Address		: json.Address,
 		}
 
@@ -377,13 +377,13 @@ func DeleteItem(c *gin.Context) {
 }
 
 func OptionsUser(c *gin.Context) {
-	c.Writer.Header().Set("Access-Control-Allow-Methods", "DELETE,POST, PUT")
+	c.Writer.Header().Set("Access-Control-Allow-Methods", "DELETE,POST,PUT")
 	c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	c.Next()
 }
 
 func OptionsItem(c *gin.Context) {
-	c.Writer.Header().Set("Access-Control-Allow-Methods", "DELETE,POST, PUT")
+	c.Writer.Header().Set("Access-Control-Allow-Methods", "DELETE,POST,PUT")
 	c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	c.Next()
 }

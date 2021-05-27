@@ -265,7 +265,7 @@ export default ({
           this.$http
           .put('/users/' + this.$route.params.id, {
             name          : this.karyawan.name,
-            date_of_birth : this.karyawan.date,
+            date_of_birth : this.date,
             gender        : this.karyawan.gender,
             phone_number  : this.karyawan.phone_number,
             address       : this.karyawan.address,
