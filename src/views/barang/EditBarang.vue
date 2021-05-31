@@ -110,7 +110,8 @@
                          >
                             <template v-slot:activator="{ on, attrs }">
                                 <v-text-field
-                                v-model="computedDateFormatted"
+                                v-model="item.expired_date"
+                                @click:clear="item.expired_date = ''"
                                 prepend-inner-icon="mdi-calendar"
                                 label="Tanggal Lahir"
                                 single-line
@@ -123,7 +124,7 @@
                             </template>
 
                             <v-date-picker
-                                v-model="date"
+                                v-model="item.expired_date"
                                 no-title
                                 @input="menudate = false"
                             ></v-date-picker>
@@ -175,7 +176,6 @@ export default ({
 
             type: ['Makanan', 'Minuman',],
 
-            date: new Date().toISOString().substr(0, 10),
             dateFormatted: this.formatDate(new Date().toISOString().substr(0, 10)),
             menudate: false,
 
@@ -186,7 +186,7 @@ export default ({
                 purchase_price : '',
                 selling_price  : '',
                 stock_item     : '',
-                expired_date   : '',  
+                expired_date   : new Date().toISOString().substr(0, 10),  
             },
         }
     },
@@ -247,7 +247,7 @@ export default ({
             purchase_price : this.item.purchase_price,
             selling_price  : this.item.selling_price,
             stock_item     : this.item.stock_item,
-            expired_date   : this.date,
+            expired_date   : this.item.expired_date,
           })
           
           .then()

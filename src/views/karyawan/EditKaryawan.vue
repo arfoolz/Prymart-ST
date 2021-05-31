@@ -48,7 +48,8 @@
                          >
                             <template v-slot:activator="{ on, attrs }">
                                 <v-text-field
-                                v-model="computedDateFormatted"
+                                v-model="karyawan.date_of_birth"
+                                @click:clear="karyawan.date_of_birth = ''"
                                 prepend-inner-icon="mdi-calendar"
                                 label="Tanggal Lahir"
                                 single-line
@@ -61,7 +62,7 @@
                             </template>
 
                             <v-date-picker
-                                v-model="date"
+                                v-model="karyawan.date_of_birth"
                                 no-title
                                 @input="menudate = false"
                             ></v-date-picker>
@@ -194,20 +195,22 @@ export default ({
 
             type: ['Pria', 'Wanita',],
 
-            date: new Date().toISOString().substr(0, 10),
+            
             dateFormatted: this.formatDate(new Date().toISOString().substr(0, 10)),
             menudate: false,
 
             karyawan: {
                 code_user     : '',
                 name          : '',
-                date_of_birth : '',
+                date_of_birth : new Date().toISOString().substr(0, 10),
                 gender        : '',
                 phone_number  : '',
                 address       : '',
                 // username:'',
                 // password:'',
             },
+
+
         }
     },
 
@@ -265,7 +268,7 @@ export default ({
           this.$http
           .put('/users/' + this.$route.params.id, {
             name          : this.karyawan.name,
-            date_of_birth : this.date,
+            date_of_birth : this.karyawan.date_of_birth,
             gender        : this.karyawan.gender,
             phone_number  : this.karyawan.phone_number,
             address       : this.karyawan.address,
