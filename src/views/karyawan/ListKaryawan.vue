@@ -220,6 +220,7 @@ export default {
    
     methods: {
         renderData(){
+            console.log("lll")
             this.$http
             .get('/users')
             .then(response=>{   
@@ -232,12 +233,19 @@ export default {
             .delete('/users/' + id )
             .then(response=>{   
                 console.log(response)
-                this.dataTable = response.data
+                // this.dataTable = response.data
                 console.log(this.dataTable)
-                // this.$toast.success('Data has been deleted successfully')
-                
-                window.location.reload()
+                this.$toast.success('Data has been deleted successfully')
+                this.renderData()
+                // window.location.reload()
             })
+
+            // .catch((error) => {
+            //     if(error.response.data.errors)(
+            //       this.$toast.error("Kehapus kan")
+            //     )
+            // })
+            
         }   
     },
 }

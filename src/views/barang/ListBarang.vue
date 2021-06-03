@@ -211,9 +211,10 @@ export default {
             .delete('/items/' + id )
             .then(response=>{   
                 console.log(response)
-                this.dataTable = response.data
+                // this.dataTable = response.data
+                this.$toast.success('Data has been deleted successfully')
                 console.log(this.dataTable)
-                window.location.reload()
+                // window.location.reload()
             })
         },
        
