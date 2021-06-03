@@ -1,6 +1,6 @@
     <template>
     <div>
-        <h2>Edit Data Karyawan</h2>
+        <h2>Edit Data Barang</h2>
 
         <br>
 
